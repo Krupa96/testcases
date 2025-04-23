@@ -1,0 +1,60 @@
+import pandas as pd
+import random
+import string
+
+# Load data
+df = pd.read_excel('names_data.xlsx')  # Should have 'names' column
+noise_df = pd.read_excel('noise_words.xlsx')  # Should have 'noise' column
+
+# Convert noise phrases to lowercase
+noise_phrases = [str(phrase).lower().strip() for phrase in noise_df['noise'].dropna()]
+
+def get_blocked_positions(words, noise_phrases):
+    """
+    Returns a set of space positions (between words) that are blocked due to noise phrases or adjacent to them.
+    """
+    blocked_spaces = set()
+    lowered_words = [w.lower() for w in words]
+
+    for phrase in noise_phrases:
+        phrase_tokens = phrase.split()
+        n = len(phrase_tokens)
+        for i in range(len(words) - n + 1):
+            if lowered_words[i:i + n] == phrase_tokens:
+                # Block spaces:
+                # - Before the phrase (space before word[i]) -> i-1
+                # - Inside the phrase (i to i+n-2 are spaces between tokens)
+                # - After the phrase (space after word[i+n-1]) -> i+n-1
+                for j in range(i, i + n - 1):  # spaces inside the phrase
+                    blocked_spaces.add(j)
+                if i > 0:
+                    blocked_spaces.add(i - 1)  # space before
+                if i + n - 1 < len(words) - 1:
+                    blocked_spaces.add(i + n - 1)  # space after
+
+    return blocked_spaces
+
+def replace_random_space_with_punct(name):
+    words = name.split()
+    if len(words) < 2:
+        return name
+
+    blocked_positions = get_blocked_positions(words, noise_phrases)
+
+    # Valid space positions are between word[i] and word[i+1] for i in 0 to len(words)-2
+    safe_positions = [i for i in range(len(words) - 1) if i not in blocked_positions]
+
+    if not safe_positions:
+        return name  # No safe space to replace
+
+    idx = random.choice(safe_positions)
+    punct = random.choice(string.punctuation)
+
+    # Insert punctuation at chosen space
+    modified_name = ' '.join(words[:idx + 1]) + punct + ' ' + ' '.join(words[idx + 1:])
+    return modified_name
+
+# Apply to DataFrame
+df['modified_names'] = df['names'].apply(replace_random_space_with_punct)
+
+print(df)
