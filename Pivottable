@@ -1,0 +1,47 @@
+import pandas as pd
+from openpyxl import load_workbook
+from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.styles import Font, PatternFill
+
+# Load existing Excel workbook
+file_path = "your_file.xlsx"  # Change this to your file name
+wb = load_workbook(file_path)
+ws = wb["Sheet1"]
+
+# Read worksheet into pandas DataFrame
+data = ws.values
+columns = next(data)
+df = pd.DataFrame(data, columns=columns)
+
+# Create pivot table: index = testdetails, columns = testresult outcome, values = count of testresult outcome
+pivot_df = pd.pivot_table(df,
+                          index='testdetails',
+                          columns='testresult outcome',
+                          values='testresult outcome',
+                          aggfunc='count',
+                          fill_value=0)
+
+# Remove existing results overview sheet if exists
+if "results overview" in wb.sheetnames:
+    del wb["results overview"]
+results_ws = wb.create_sheet("results overview")
+
+# Define header style
+header_font = Font(bold=True)
+header_fill = PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid")
+
+# Write pivot data to results overview sheet
+for r_idx, row in enumerate(dataframe_to_rows(pivot_df, index=True, header=True), 1):
+    for c_idx, value in enumerate(row, 1):
+        cell = results_ws.cell(row=r_idx, column=c_idx, value=value)
+        if r_idx == 1 or c_idx == 1:
+            cell.font = header_font
+            cell.fill = header_fill
+
+# Optionally, set column widths (for better visibility)
+for col in results_ws.columns:
+    max_length = max(len(str(cell.value)) if cell.value is not None else 0 for cell in col)
+    results_ws.column_dimensions[col[0].column_letter].width = max_length + 2
+
+# Save workbook
+wb.save("pivot_output.xlsx")  # Output file
