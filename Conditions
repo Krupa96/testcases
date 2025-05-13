@@ -1,0 +1,10 @@
+If(GetSelectedCount([MONTH in 2025]) = 0,
+    'white()', // No month selected
+    If(GetSelectedCount(CTRY_NAME) > 0 and GetFieldSelections(CTRY_NAME) = CTRY_NAME,
+        'green()', // Country selected
+        If(GetPossibleCount({<[CTRY_NAME] = {'$(=CTRY_NAME)'}>} CTRY_NAME) > 0,
+            '#ccffcc', // light green - possible
+            '#ffcccc'  // light red - not possible
+        )
+    )
+)
