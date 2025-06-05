@@ -53,3 +53,16 @@ Date(
     )),
     'MMM'
 )
+'This dashboard contains data from ' &
+MinString(
+    Aggr(
+        If(Sum(Count) > 0, MonthField),
+        MonthField
+    )
+) & ' – ' &
+MaxString(
+    Aggr(
+        If(Sum(Count) > 0, MonthField),
+        MonthField
+    )
+)
