@@ -84,3 +84,13 @@ Pick(
   ),
   [Test_Result_Outcome]
 )
+=Aggr(
+    If(
+        Count(DISTINCT [Test_Detail_Name]) > 1
+        and Index([Test_Detail_Name], ' (') > 0,
+        Left([Test_Detail_Name], Index([Test_Detail_Name], ' (') - 1),
+        [Test_Detail_Name]
+    ),
+    [Test_Detail_Name],
+    [Test_Result_Outcome]
+)
