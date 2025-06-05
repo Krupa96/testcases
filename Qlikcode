@@ -17,3 +17,9 @@ Pick(
     ),
     'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
 )
+=If(
+  Count(TOTAL <[YourOtherDimensions]> DISTINCT [Test_Detail_Name]) > 1,
+  SubField([Test_Detail_Name], ' (', 1),
+  [Test_Detail_Name]
+)
+
