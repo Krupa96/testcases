@@ -22,4 +22,13 @@ Pick(
   SubField([Test_Detail_Name], ' (', 1),
   [Test_Detail_Name]
 )
+=If(
+  Count(TOTAL <[Test_Result_Outcome]> DISTINCT [Test_Detail_Name]) > 1,
+  If(
+    WildMatch([Test_Detail_Name], '*_*'),
+    Left([Test_Detail_Name], Index([Test_Detail_Name], '_') - 1),
+    Left([Test_Detail_Name], Index([Test_Detail_Name], ' (') - 1)
+  ),
+  [Test_Detail_Name]
+)
 
