@@ -66,3 +66,20 @@ MaxString(
         MonthField
     )
 )
+'This dashboard contains data from ' &
+Pick(
+    Floor(FirstSortedValue(
+        Aggr(If(Sum(Count) > 0, Floor(MonthNo)), MonthNo),
+        Floor(MonthNo)
+    )),
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+) & ' – ' &
+Pick(
+    Floor(FirstSortedValue(
+        Aggr(If(Sum(Count) > 0, Floor(MonthNo)), MonthNo),
+        -Floor(MonthNo)
+    )),
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+)
