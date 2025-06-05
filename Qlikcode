@@ -71,3 +71,16 @@ Pick(
   ),
   [Test_Detail_Name], [Test_Result_Outcome]
 )
+=Aggr(
+  If(
+    Count(DISTINCT [Test_Detail_Name]) > 1
+    and WildMatch(MinString([Test_Detail_Name]), '*(*'),
+    Left(MinString([Test_Detail_Name]), Index(MinString([Test_Detail_Name]), ' (') - 1),
+    [Test_Detail_Name]
+  ),
+  If(Index([Test_Detail_Name], ' (') > 0,
+     Left([Test_Detail_Name], Index([Test_Detail_Name], ' (') - 1),
+     [Test_Detail_Name]
+  ),
+  [Test_Result_Outcome]
+)
