@@ -38,3 +38,18 @@ Date(Min({<MonthField = {"=Sum({<Count={"*>0"}>} Count) > 0"}>} MonthField), 'MM
 Date(Max({<MonthField = {"=Sum({<Count={"*>0"}>} Count) > 0"}>} MonthField), 'MMM')
 
 
+'This dashboard contains data from ' &
+Date(
+    Min(Aggr(
+        If(Sum(Count) > 0, MonthField),
+        MonthField
+    )),
+    'MMM'
+) & ' – ' &
+Date(
+    Max(Aggr(
+        If(Sum(Count) > 0, MonthField),
+        MonthField
+    )),
+    'MMM'
+)
