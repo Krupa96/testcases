@@ -32,3 +32,21 @@ Pick(
   [Test_Detail_Name]
 )
 
+=If(
+  Count(
+    TOTAL <[Test_Result_Outcome]> DISTINCT 
+    If(Index([Test_Detail_Name], ' (') > 0,
+       Left([Test_Detail_Name], Index([Test_Detail_Name], ' (') - 1),
+       [Test_Detail_Name]
+    )
+  ) < Count(TOTAL <[Test_Result_Outcome]> DISTINCT [Test_Detail_Name]),
+
+  // Then show combined version (base name)
+  If(Index([Test_Detail_Name], ' (') > 0,
+     Left([Test_Detail_Name], Index([Test_Detail_Name], ' (') - 1),
+     [Test_Detail_Name]
+  ),
+
+  // Else show original
+  [Test_Detail_Name]
+)
