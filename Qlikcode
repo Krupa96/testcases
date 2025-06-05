@@ -32,4 +32,9 @@ Num(
     ),
     '#,##0.000%'
 )
+'This dashboard contains data from ' &
+Date(Min({<MonthField = {"=Sum({<Count={"*>0"}>} Count) > 0"}>} MonthField), 'MMM') & 
+' – ' &
+Date(Max({<MonthField = {"=Sum({<Count={"*>0"}>} Count) > 0"}>} MonthField), 'MMM')
+
 
