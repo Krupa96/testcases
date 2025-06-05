@@ -1,0 +1,35 @@
+'Segment: ' & Test_Result & 
+' | Value: ' & Sum(Count) & 
+' | %: ' & 
+Num(
+    If(
+        GetSelectedCount(FeedName) = 1,
+        Sum(Count) / Sum(TOTAL Count),
+        
+        If(
+            GetSelectedCount(FeedName) > 1 or GetSelectedCount(Country) = 1,
+            Sum(Count) / Sum(TOTAL <FeedName> Count),
+            
+            Sum(Count) / Sum(TOTAL <Country> Count)
+        )
+    ),
+    '#,##0.000%'
+)
+
+
+
+Num(
+    If(
+        GetSelectedCount(FeedName) = 1,
+        Sum(Count) / Sum(TOTAL Count),
+        
+        If(
+            GetSelectedCount(FeedName) > 1 or GetSelectedCount(Country) = 1,
+            Sum(Count) / Sum(TOTAL <FeedName> Count),
+            
+            Sum(Count) / Sum(TOTAL <Country> Count)
+        )
+    ),
+    '#,##0.000%'
+)
+
