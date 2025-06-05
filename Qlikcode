@@ -1,103 +1,19 @@
-'Segment: ' & Test_Result & 
-' | Value: ' & Sum(Count) & 
-' | %: ' & 
-Num(
-    If(
-        GetSelectedCount(FeedName) = 1,
-        Sum(Count) / Sum(TOTAL Count),
-        
-        If(
-            GetSelectedCount(FeedName) > 1 or GetSelectedCount(Country) = 1,
-            Sum(Count) / Sum(TOTAL <FeedName> Count),
-            
-            Sum(Count) / Sum(TOTAL <Country> Count)
+'This dashboard contains data from ' &
+Pick(
+    Min(
+        Aggr(
+            If(Sum({<Count={">0"}>} Count), Floor(Num#(Trim(Only({<FeedName=P(FeedName)>} MTH)), '##.#'))),
+            FeedName
         )
     ),
-    '#,##0.000%'
-)
-
-
-
-Num(
-    If(
-        GetSelectedCount(FeedName) = 1,
-        Sum(Count) / Sum(TOTAL Count),
-        
-        If(
-            GetSelectedCount(FeedName) > 1 or GetSelectedCount(Country) = 1,
-            Sum(Count) / Sum(TOTAL <FeedName> Count),
-            
-            Sum(Count) / Sum(TOTAL <Country> Count)
+    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
+) & ' – ' &
+Pick(
+    Max(
+        Aggr(
+            If(Sum({<Count={">0"}>} Count), Floor(Num#(Trim(Only({<FeedName=P(FeedName)>} MTH)), '##.#'))),
+            FeedName
         )
     ),
-    '#,##0.000%'
-)
-'This dashboard contains data from ' &
-Date(Min({<MonthField = {"=Sum({<Count={"*>0"}>} Count) > 0"}>} MonthField), 'MMM') & 
-' – ' &
-Date(Max({<MonthField = {"=Sum({<Count={"*>0"}>} Count) > 0"}>} MonthField), 'MMM')
-
-
-'This dashboard contains data from ' &
-Date(
-    Min(Aggr(
-        If(Sum(Count) > 0, MonthField),
-        MonthField
-    )),
-    'MMM'
-) & ' – ' &
-Date(
-    Max(Aggr(
-        If(Sum(Count) > 0, MonthField),
-        MonthField
-    )),
-    'MMM'
-)
-'This dashboard contains data from ' &
-MinString(
-    Aggr(
-        If(Sum(Count) > 0, MonthField),
-        MonthField
-    )
-) & ' – ' &
-MaxString(
-    Aggr(
-        If(Sum(Count) > 0, MonthField),
-        MonthField
-    )
-)
-'This dashboard contains data from ' &
-Pick(
-    Floor(FirstSortedValue(
-        Aggr(If(Sum(Count) > 0, Floor(MonthNo)), MonthNo),
-        Floor(MonthNo)
-    )),
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-) & ' – ' &
-Pick(
-    Floor(FirstSortedValue(
-        Aggr(If(Sum(Count) > 0, Floor(MonthNo)), MonthNo),
-        -Floor(MonthNo)
-    )),
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-)
-'This dashboard contains data from ' &
-Pick(
-    Min(Aggr(If(Sum(Count) > 0, Floor(MonthNo)), Floor(MonthNo))),
-    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
-) & ' – ' &
-Pick(
-    Max(Aggr(If(Sum(Count) > 0, Floor(MonthNo)), Floor(MonthNo))),
-    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
-)
-'This dashboard contains data from ' &
-Pick(
-    Min(Aggr(If(Sum(Count) > 0, Floor(MTH)), Floor(MTH))),
-    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
-) & ' – ' &
-Pick(
-    Max(Aggr(If(Sum(Count) > 0, Floor(MTH)), Floor(MTH))),
     'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
 )
