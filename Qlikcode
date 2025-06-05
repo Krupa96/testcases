@@ -92,3 +92,12 @@ Pick(
     Max(Aggr(If(Sum(Count) > 0, Floor(MonthNo)), Floor(MonthNo))),
     'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
 )
+'This dashboard contains data from ' &
+Pick(
+    Min(Aggr(If(Sum(Count) > 0, Floor(MTH)), Floor(MTH))),
+    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
+) & ' – ' &
+Pick(
+    Max(Aggr(If(Sum(Count) > 0, Floor(MTH)), Floor(MTH))),
+    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
+)
