@@ -1,0 +1,23 @@
+import random
+
+diac_rev_dict = {'Č': 'C', 'Á': 'A', 'Ř': 'R', 'É': 'E'}
+diac_rep_dict = {'C': 'Č', 'A': 'Á', 'R': 'Ř', 'E': 'É'}
+
+def convert_one_random(token):
+    token = token.upper()
+
+    diac_chars = [c for c in token if c in diac_rev_dict]
+    ascii_chars = [c for c in token if c in diac_rep_dict]
+
+    if diac_chars:
+        to_replace = random.choice(diac_chars)
+        return token.replace(to_replace, diac_rev_dict[to_replace], 1)
+
+    elif ascii_chars:
+        to_replace = random.choice(ascii_chars)
+        return token.replace(to_replace, diac_rep_dict[to_replace], 1)
+
+    return token
+
+# Test
+print(convert_one_random("ČÁŘÉK"))
