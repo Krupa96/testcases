@@ -52,3 +52,38 @@ def convert_name(name):
 
     tokens[idx] = converted
     return ' '.join(tokens)
+
+
+# Case 2
+import random
+
+# Noise list and punctuation options
+noise_list = ['ČÁŘÉK', 'NOVÁK']
+noise_set = {w.upper() for w in noise_list}
+punctuation_list = ['.', ',', '-', "'"]
+
+def insert_random_punctuation(token):
+    if len(token) == 0:
+        return None
+
+    punct = random.choice(punctuation_list)
+    pos = random.randint(1, len(token) - 1)  # Avoid placing at start (optional)
+    return token[:pos] + punct + token[pos:]
+
+def fm20_transform(name):
+    tokens = name.split()
+
+    # Find indices of tokens NOT in noise list
+    modifiable_indices = [i for i, t in enumerate(tokens) if t.upper() not in noise_set]
+
+    if not modifiable_indices:
+        return None  # No eligible token, skip
+
+    idx = random.choice(modifiable_indices)
+    modified_token = insert_random_punctuation(tokens[idx])
+
+    if not modified_token:
+        return None  # Insert failed (empty token)
+
+    tokens[idx] = modified_token
+    return ' '.join(tokens)
