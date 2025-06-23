@@ -1,6 +1,8 @@
 import random
 
-# Replace with your actual mappings
+noise_list = ['ČÁŘÉK', 'NOVÁK']
+noise_set = {w.upper() for w in noise_list}
+
 diac_rev_dict = {'Č': 'C', 'Á': 'A', 'Ř': 'R', 'É': 'E'}
 diac_rep_dict = {
     'C': ['Č'],
@@ -9,11 +11,14 @@ diac_rep_dict = {
     'E': ['É', 'È']
 }
 
-def convert_one_random(token):
-    token = token.upper()
+def convert_one_token(token):
+    token_upper = token.upper()
 
-    diac_chars = [c for c in token if c in diac_rev_dict]
-    ascii_chars = [c for c in token if c in diac_rep_dict]
+    if token_upper in noise_set:
+        return None  # Not modifiable
+
+    diac_chars = [c for c in token_upper if c in diac_rev_dict]
+    ascii_chars = [c for c in token_upper if c in diac_rep_dict]
 
     if diac_chars:
         to_replace = random.choice(diac_chars)
@@ -21,7 +26,29 @@ def convert_one_random(token):
 
     elif ascii_chars:
         to_replace = random.choice(ascii_chars)
-        diac_variant = random.choice(diac_rep_dict[to_replace])  # ✅ Fix here
+        diac_variant = random.choice(diac_rep_dict[to_replace])
         return token.replace(to_replace, diac_variant, 1)
 
-    return token
+    return None  # No change possible
+
+def convert_name(name):
+    tokens = name.split()
+
+    modifiable_indices = []
+    for i, t in enumerate(tokens):
+        if t.upper() not in noise_set:
+            if any(c in diac_rev_dict or c in diac_rep_dict for c in t.upper()):
+                modifiable_indices.append(i)
+
+    if not modifiable_indices:
+        return None  # ⛔ Nothing to convert, skip row
+
+    # Modify one eligible token
+    idx = random.choice(modifiable_indices)
+    converted = convert_one_token(tokens[idx])
+    
+    if converted is None:
+        return None  # ⛔ Conversion attempt failed
+
+    tokens[idx] = converted
+    return ' '.join(tokens)
