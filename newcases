@@ -1,7 +1,13 @@
 import random
 
+# Replace with your actual mappings
 diac_rev_dict = {'Č': 'C', 'Á': 'A', 'Ř': 'R', 'É': 'E'}
-diac_rep_dict = {'C': 'Č', 'A': 'Á', 'R': 'Ř', 'E': 'É'}
+diac_rep_dict = {
+    'C': ['Č'],
+    'A': ['Á', 'À'],
+    'R': ['Ř'],
+    'E': ['É', 'È']
+}
 
 def convert_one_random(token):
     token = token.upper()
@@ -15,9 +21,7 @@ def convert_one_random(token):
 
     elif ascii_chars:
         to_replace = random.choice(ascii_chars)
-        return token.replace(to_replace, diac_rep_dict[to_replace], 1)
+        diac_variant = random.choice(diac_rep_dict[to_replace])  # ✅ Fix here
+        return token.replace(to_replace, diac_variant, 1)
 
     return token
-
-# Test
-print(convert_one_random("ČÁŘÉK"))
