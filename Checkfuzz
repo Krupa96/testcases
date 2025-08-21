@@ -1,0 +1,46 @@
+import pandas as pd
+from rapidfuzz import fuzz, process
+
+# Load source data
+individuals = pd.read_csv("individual.csv")
+entities = pd.read_csv("entity.csv")
+testpack = pd.read_csv("testpack.csv")   # contains record_id, alias_name
+
+# Build dictionary: record_id -> possible originals
+id_to_originals = {}
+
+# From individuals
+for _, row in individuals.iterrows():
+    full_name = f"{str(row['givenname']).strip()} {str(row['familyname']).strip()}"
+    id_to_originals[row['record_id']] = id_to_originals.get(row['record_id'], []) + [full_name]
+
+# From entities
+for _, row in entities.iterrows():
+    name = str(row['entityname']).strip()
+    id_to_originals[row['record_id']] = id_to_originals.get(row['record_id'], []) + [name]
+
+
+# Trace back function
+def trace_back(record_id, alias_name):
+    candidates = id_to_originals.get(record_id, [])
+    if not candidates:
+        return None, 0
+    # Get best fuzzy match
+    best_match, score, _ = process.extractOne(alias_name, candidates, scorer=fuzz.ratio)
+    return best_match, score
+
+
+# Apply to testpack
+results = []
+for _, row in testpack.iterrows():
+    orig, score = trace_back(row['record_id'], row['alias_name'])
+    results.append({
+        "record_id": row['record_id'],
+        "alias": row['alias_name'],
+        "matched_original": orig,
+        "similarity_score": score
+    })
+
+# Save traceability results
+df_out = pd.DataFrame(results)
+df_out.to_csv("alias_traceback.csv", index=False)
